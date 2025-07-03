@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>💀 FC Availability</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-start p-6">
+  <div class="w-full max-w-xl bg-white rounded-2xl shadow-lg p-6 mt-10">
+    <h1 class="text-3xl font-bold text-center mb-4">💀 FC Event Availability</h1>
+    <p class="text-center text-gray-600 mb-6">Let us know if you'll be there!</p>
+    
+    <form id="availability-form" class="space-y-4">
+      <div>
+        <label for="name" class="block font-medium">Your Name</label>
+        <input type="text" id="name" required class="w-full p-2 border border-gray-300 rounded-xl" />
+      </div>
+      <div>
+        <label class="block font-medium">Are you available?</label>
+        <select id="availability" class="w-full p-2 border border-gray-300 rounded-xl">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+      <button type="submit" class="w-full bg-black text-white font-semibold py-2 px-4 rounded-xl hover:bg-gray-800">Submit</button>
+    </form>
+  </div>
+
+  <div class="w-full max-w-xl bg-white rounded-2xl shadow-lg p-6 mt-10">
+    <h2 class="text-2xl font-bold mb-4 text-center">Community Responses</h2>
+    <ul id="response-list" class="space-y-2">
+      <!-- Responses will be injected here -->
+    </ul>
+  </div>
+
+  <script>
+    const form = document.getElementById('availability-form');
+    const responseList = document.getElementById('response-list');
+
+    // TEMPORARY local data (replace with Google Sheets integration later)
+    let responses = [];
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const availability = document.getElementById('availability').value;
+
+      if (!name) return;
+
+      // If name exists, update
+      const index = responses.findIndex(r => r.name.toLowerCase() === name.toLowerCase());
+      if (index >= 0) {
+        responses[index].availability = availability;
+      } else {
+        responses.push({ name, availability });
+      }
+
+      renderResponses();
+      form.reset();
+    });
+
+    function renderResponses() {
+      responseList.innerHTML = '';
+      responses.forEach(r => {
+        const li = document.createElement('li');
+        li.className = 'flex justify-between border p-2 rounded-xl';
+        li.innerHTML = <span class="font-medium">${r.name}</span><span class="${r.availability === 'Yes' ? 'text-green-600' : 'text-red-500'} font-semibold">${r.availability}</span>;
+        responseList.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
